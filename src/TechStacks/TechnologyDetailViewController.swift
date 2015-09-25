@@ -47,7 +47,7 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
         self.title = "loading \(name)..."
 
         appData.loadTechnology(slug)
-            .then(body: { (r:GetTechnologyResponse) -> Void in
+            .then({ (r:GetTechnologyResponse) -> Void in
                 if let technology = r.technology {
                     self.technology = r.technology
                     self.title = "Technology"
@@ -76,7 +76,9 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
                     self.lblDescription.frame = CGRect(
                         x: pad, y: logoBounds.height,
                         width: innerWidth, height: Style.detailSize.lineHeight)
-                    self.lblDescription.font = self.lblDescription.font.fontWithSize(Style.detailSize)
+                    if let f = self.lblDescription.font?.fontWithSize(Style.detailSize) {
+                        self.lblDescription.font = f
+                    }
                     self.lblDescription.sizeToFit()
                     
                     let tblOffset = self.lblDescription.frame.origin.y + self.lblDescription.frame.height + pad
@@ -86,7 +88,7 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
                         width: fullWidth, height: self.view.frame.height - tblOffset - 54 /* bottom bar */)
 
                     self.imgLogo.loadAsync(technology.logoUrl, withSize:logoBounds)
-                        .then(body: { (img:UIImage?) -> Void in
+                        .then({ (img:UIImage?) -> Void in
                             if img != nil {
                                 self.imgLogo.frame.origin = CGPoint(x: fullWidth - img!.size.width - pad, y: 0)
                             }
@@ -109,9 +111,9 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
         let selected = technologyStacks[indexPath.row]
         
         // Note: Should not be necessary but current iOS 8.0 bug requires it.
-        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow()!, animated: false)
-
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Bordered, target: nil, action: nil)
+        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: false)
+        
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
         self.navigationController?.openTechnologyStack(selected.slug!)
     }
     
