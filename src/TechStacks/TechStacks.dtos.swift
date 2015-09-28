@@ -1,5 +1,5 @@
 /* Options:
-Date: 2015-09-25 22:11:55
+Date: 2015-09-28 02:10:09
 SwiftVersion: 2.0
 Version: 4.046
 BaseUrl: http://techstacks.io
@@ -9,7 +9,7 @@ BaseClass: NSObject
 //AddServiceStackTypes: True
 //IncludeTypes:
 //ExcludeTypes:
-ExcludeGenericBaseTypes: False
+//ExcludeGenericBaseTypes: True
 //AddResponseStatus: False
 //AddImplicitVersion:
 //InitializeCollections: True
@@ -171,54 +171,7 @@ public class GetAllTechnologies : NSObject, IReturn
     
     required public override init(){}
 }
-
-//** MJC START
-// @Route("/technology/search")
-// @AutoQueryViewer(Title="Find Technologies", Description="Explore different Technologies", IconUrl="/img/app/tech-white-75.png", DefaultSearchField="Tier", DefaultSearchType="=", DefaultSearchText="Data")
-public class FindTechnologies : NSObject, IReturn
-{
-    //public typealias Return = QueryResponse<Technology>
-    public typealias Return = FindTechnologiesResponse
-    
-    required public override init(){}
-    
-    public var skip:Int?
-    public var take:Int?
-    public var orderBy:String?
-    public var orderByDesc:String?
-    public var include:String?
-    public var meta:[String:String] = [:]
-
-    public var name:String?
-    public var reload:Bool?
-}
-
-public class FindTechnologiesResponse : NSObject
-{
-    required public override init(){}
-    
-    public var offset:Int?
-    public var total:Int?
-    public var results:[Technology] = []
-    public var meta:[String:String] = [:]
-    public var responseStatus:ResponseStatus?
-}
-
-extension FindTechnologiesResponse : JsonSerializable
-{
-    public static var typeName:String { return "FindTechnologiesResponse" }
-    public static var metadata:Metadata {
-        return Metadata.create([
-            Type<FindTechStacksResponse>.optionalProperty("offset", get: { $0.offset }, set: { $0.offset = $1 }),
-            Type<FindTechStacksResponse>.optionalProperty("total", get: { $0.total }, set: { $0.total = $1 }),
-            Type<FindTechStacksResponse>.arrayProperty("results", get: { $0.results }, set: { $0.results = $1 }),
-            Type<FindTechStacksResponse>.objectProperty("meta", get: { $0.meta }, set: { $0.meta = $1 }),
-            Type<FindTechStacksResponse>.optionalProperty("responseStatus", get: { $0.responseStatus }, set: { $0.responseStatus = $1 }),
-            ])
-    }
-}
-//** MJC END
-
+//Excluded FindTechnologies : QueryBase<Technology>
 
 // @Route("/techstacks", "POST")
 public class CreateTechnologyStack : NSObject, IReturn
@@ -324,52 +277,7 @@ public class AppOverview : NSObject, IReturn
     required public override init(){}
     public var reload:Bool?
 }
-
-//** MJC START
-// @Route("/techstacks/search")
-// @AutoQueryViewer(Title="Find Technology Stacks", Description="Explore different Technology Stacks", IconUrl="/img/app/stacks-white-75.png", DefaultSearchField="Description", DefaultSearchType="Contains", DefaultSearchText="ServiceStack")
-public class FindTechStacks : NSObject, IReturn
-{
-    //public typealias Return = QueryResponse<TechnologyStack>
-    public typealias Return = FindTechStacksResponse
-    
-    required public override init(){}
-    
-    public var skip:Int?
-    public var take:Int?
-    public var orderBy:String?
-    public var orderByDesc:String?
-    public var include:String?
-    public var meta:[String:String] = [:]
-    
-    public var reload:Bool?
-}
-
-public class FindTechStacksResponse : NSObject
-{
-    required public override init(){}
-    
-    public var offset:Int?
-    public var total:Int?
-    public var results:[TechnologyStack] = []
-    public var meta:[String:String] = [:]
-    public var responseStatus:ResponseStatus?
-}
-
-extension FindTechStacksResponse : JsonSerializable
-{
-    public static var typeName:String { return "FindTechStacksResponse" }
-    public static var metadata:Metadata {
-        return Metadata.create([
-            Type<FindTechStacksResponse>.optionalProperty("offset", get: { $0.offset }, set: { $0.offset = $1 }),
-            Type<FindTechStacksResponse>.optionalProperty("total", get: { $0.total }, set: { $0.total = $1 }),
-            Type<FindTechStacksResponse>.arrayProperty("results", get: { $0.results }, set: { $0.results = $1 }),
-            Type<FindTechStacksResponse>.objectProperty("meta", get: { $0.meta }, set: { $0.meta = $1 }),
-            Type<FindTechStacksResponse>.optionalProperty("responseStatus", get: { $0.responseStatus }, set: { $0.responseStatus = $1 }),
-            ])
-    }
-}
-//** MJC END
+//Excluded FindTechStacks : QueryBase<TechnologyStack>
 
 // @Route("/favorites/techtacks", "GET")
 public class GetFavoriteTechStack : NSObject, IReturn
@@ -532,22 +440,7 @@ public class UnAssignRoles : NSObject, IReturn
     // @DataMember(Order=3)
     public var roles:[String] = []
 }
-
-// @Route("/posts")
-public class QueryPosts : NSObject, IReturn
-{
-    public typealias Return = QueryResponse<Post>
-    
-    required public override init(){}
-
-    public var skip:Int?
-    public var take:Int?
-    public var orderBy:String?
-    public var orderByDesc:String?
-    public var include:String?
-    public var meta:[String:String] = [:]
-
-}
+//Excluded QueryPosts : QueryBase<Post>
 
 public class LogoUrlApprovalResponse : NSObject
 {
@@ -748,6 +641,9 @@ public class GetUserInfoResponse : NSObject
 public class AuthenticateResponse : NSObject
 {
     required public override init(){}
+    // @DataMember(Order=6)
+    public var responseStatus:ResponseStatus?
+    
     // @DataMember(Order=1)
     public var userId:String?
     
@@ -762,9 +658,6 @@ public class AuthenticateResponse : NSObject
     
     // @DataMember(Order=5)
     public var referrerUrl:String?
-    
-    // @DataMember(Order=6)
-    public var responseStatus:ResponseStatus?
     
     // @DataMember(Order=7)
     public var meta:[String:String] = [:]
@@ -1128,21 +1021,6 @@ extension GetAllTechnologies : JsonSerializable
         ])
 }
 
-extension FindTechnologies : JsonSerializable
-{
-    public static var typeName:String { return "FindTechnologies" }
-    public static var metadata = Metadata.create([
-        Type<FindTechnologies>.optionalProperty("name", get: { $0.name }, set: { $0.name = $1 }),
-        Type<FindTechnologies>.optionalProperty("reload", get: { $0.reload }, set: { $0.reload = $1 }),
-        Type<FindTechnologies>.optionalProperty("skip", get: { $0.skip }, set: { $0.skip = $1 }),
-        Type<FindTechnologies>.optionalProperty("take", get: { $0.take }, set: { $0.take = $1 }),
-        Type<FindTechnologies>.optionalProperty("orderBy", get: { $0.orderBy }, set: { $0.orderBy = $1 }),
-        Type<FindTechnologies>.optionalProperty("orderByDesc", get: { $0.orderByDesc }, set: { $0.orderByDesc = $1 }),
-        Type<FindTechnologies>.optionalProperty("include", get: { $0.include }, set: { $0.include = $1 }),
-        Type<FindTechnologies>.objectProperty("meta", get: { $0.meta }, set: { $0.meta = $1 }),
-        ])
-}
-
 extension CreateTechnologyStack : JsonSerializable
 {
     public static var typeName:String { return "CreateTechnologyStack" }
@@ -1235,20 +1113,6 @@ extension AppOverview : JsonSerializable
     public static var typeName:String { return "AppOverview" }
     public static var metadata = Metadata.create([
         Type<AppOverview>.optionalProperty("reload", get: { $0.reload }, set: { $0.reload = $1 }),
-        ])
-}
-
-extension FindTechStacks : JsonSerializable
-{
-    public static var typeName:String { return "FindTechStacks" }
-    public static var metadata = Metadata.create([
-        Type<FindTechStacks>.optionalProperty("reload", get: { $0.reload }, set: { $0.reload = $1 }),
-        Type<FindTechStacks>.optionalProperty("skip", get: { $0.skip }, set: { $0.skip = $1 }),
-        Type<FindTechStacks>.optionalProperty("take", get: { $0.take }, set: { $0.take = $1 }),
-        Type<FindTechStacks>.optionalProperty("orderBy", get: { $0.orderBy }, set: { $0.orderBy = $1 }),
-        Type<FindTechStacks>.optionalProperty("orderByDesc", get: { $0.orderByDesc }, set: { $0.orderByDesc = $1 }),
-        Type<FindTechStacks>.optionalProperty("include", get: { $0.include }, set: { $0.include = $1 }),
-        Type<FindTechStacks>.objectProperty("meta", get: { $0.meta }, set: { $0.meta = $1 }),
         ])
 }
 
@@ -1355,19 +1219,6 @@ extension UnAssignRoles : JsonSerializable
         Type<UnAssignRoles>.optionalProperty("userName", get: { $0.userName }, set: { $0.userName = $1 }),
         Type<UnAssignRoles>.arrayProperty("permissions", get: { $0.permissions }, set: { $0.permissions = $1 }),
         Type<UnAssignRoles>.arrayProperty("roles", get: { $0.roles }, set: { $0.roles = $1 }),
-        ])
-}
-
-extension QueryPosts : JsonSerializable
-{
-    public static var typeName:String { return "QueryPosts" }
-    public static var metadata = Metadata.create([
-        Type<QueryPosts>.optionalProperty("skip", get: { $0.skip }, set: { $0.skip = $1 }),
-        Type<QueryPosts>.optionalProperty("take", get: { $0.take }, set: { $0.take = $1 }),
-        Type<QueryPosts>.optionalProperty("orderBy", get: { $0.orderBy }, set: { $0.orderBy = $1 }),
-        Type<QueryPosts>.optionalProperty("orderByDesc", get: { $0.orderByDesc }, set: { $0.orderByDesc = $1 }),
-        Type<QueryPosts>.optionalProperty("include", get: { $0.include }, set: { $0.include = $1 }),
-        Type<QueryPosts>.objectProperty("meta", get: { $0.meta }, set: { $0.meta = $1 }),
         ])
 }
 
@@ -1614,12 +1465,12 @@ extension AuthenticateResponse : JsonSerializable
 {
     public static var typeName:String { return "AuthenticateResponse" }
     public static var metadata = Metadata.create([
+        Type<AuthenticateResponse>.optionalProperty("responseStatus", get: { $0.responseStatus }, set: { $0.responseStatus = $1 }),
         Type<AuthenticateResponse>.optionalProperty("userId", get: { $0.userId }, set: { $0.userId = $1 }),
         Type<AuthenticateResponse>.optionalProperty("sessionId", get: { $0.sessionId }, set: { $0.sessionId = $1 }),
         Type<AuthenticateResponse>.optionalProperty("userName", get: { $0.userName }, set: { $0.userName = $1 }),
         Type<AuthenticateResponse>.optionalProperty("displayName", get: { $0.displayName }, set: { $0.displayName = $1 }),
         Type<AuthenticateResponse>.optionalProperty("referrerUrl", get: { $0.referrerUrl }, set: { $0.referrerUrl = $1 }),
-        Type<AuthenticateResponse>.optionalProperty("responseStatus", get: { $0.responseStatus }, set: { $0.responseStatus = $1 }),
         Type<AuthenticateResponse>.objectProperty("meta", get: { $0.meta }, set: { $0.meta = $1 }),
         ])
 }

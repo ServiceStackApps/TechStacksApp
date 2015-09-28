@@ -84,13 +84,7 @@ public class AppData : NSObject
     func searchTechStacks(query:String) -> Promise<FindTechStacksResponse> {
         self.search = query
         
-        let qry = query as String
-        let request = FindTechStacks()
-        
-        var dict: [String: String]
-        dict = ["NameContains":qry, "DescriptionContains":qry]
-        
-        return client.getAsync(request, query: dict)
+        return client.getAsync(FindTechStacks(), query: ["NameContains":query, "DescriptionContains":query])
             .then({(r:FindTechStacksResponse) -> FindTechStacksResponse in
                 self.filteredTechStacks = r.results
                 return r
@@ -113,9 +107,8 @@ public class AppData : NSObject
     
     func searchTechnologies(query:String) -> Promise<FindTechnologiesResponse> {
         self.search = query
-        
-        let request = FindTechnologies()
-        return client.getAsync(request, query:["NameContains":query, "DescriptionContains":query])
+
+        return client.getAsync(FindTechnologies(), query:["NameContains":query, "DescriptionContains":query])
             .then({(r:FindTechnologiesResponse) -> FindTechnologiesResponse in
                 self.filteredTechnologies = r.results
                 return r
