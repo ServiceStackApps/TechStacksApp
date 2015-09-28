@@ -32,13 +32,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.appData.loadOverview()
     }
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        switch keyPath {
-        case AppData.Property.AllTiers:
-            self.technologyPicker.reloadAllComponents()
-        case AppData.Property.TopTechnologies:
-            self.tblView.reloadData()
-        default: break
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if let kp = keyPath {
+            switch kp {
+            case AppData.Property.AllTiers:
+                self.technologyPicker.reloadAllComponents()
+            case AppData.Property.TopTechnologies:
+                self.tblView.reloadData()
+            default: break
+            }
         }
     }
     deinit { self.appData.unobserve(self) }
@@ -58,7 +60,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         return appData.allTiers.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return appData.allTiers[row].title
     }
     
@@ -74,9 +76,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = self.tblView.dequeueReusableCellWithIdentifier("cellHome") as? UITableViewCell
-            ?? UITableViewCell()
-        
+        var cell: UITableViewCell
+        if let viewCell = self.tblView.dequeueReusableCellWithIdentifier("cellHome") as UITableViewCell? {
+            cell = viewCell
+        } else {
+            cell = UITableViewCell()
+        }
+
         cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         let tech = selectedTechnologies[indexPath.row]
         cell.textLabel?.text = "\(tech.name!) (\(tech.stacksCount!))"

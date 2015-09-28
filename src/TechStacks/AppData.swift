@@ -43,7 +43,7 @@ public class AppData : NSObject
     
     func loadOverview() -> Promise<AppOverviewResponse> {
         return client.getAsync(AppOverview())
-            .then(body:{(r:AppOverviewResponse) -> AppOverviewResponse in
+            .then({(r:AppOverviewResponse) -> AppOverviewResponse in
                 self.overview = r
                 self.allTiers = r.allTiers
                 self.topTechnologies = r.topTechnologies
@@ -53,7 +53,7 @@ public class AppData : NSObject
     
     func loadAllTechnologies() -> Promise<GetAllTechnologiesResponse> {
         return client.getAsync(GetAllTechnologies())
-            .then(body:{(r:GetAllTechnologiesResponse) -> GetAllTechnologiesResponse in
+            .then({(r:GetAllTechnologiesResponse) -> GetAllTechnologiesResponse in
                 self.allTechnologies = r.results
                 return r
             })
@@ -61,7 +61,7 @@ public class AppData : NSObject
     
     func loadAllTechStacks() -> Promise<GetAllTechnologyStacksResponse> {
         return client.getAsync(GetAllTechnologyStacks())
-            .then(body:{(r:GetAllTechnologyStacksResponse) -> GetAllTechnologyStacksResponse in
+            .then({(r:GetAllTechnologyStacksResponse) -> GetAllTechnologyStacksResponse in
                 self.allTechnologyStacks = r.results
                 return r
             })
@@ -72,21 +72,20 @@ public class AppData : NSObject
             return Promise<GetTechnologyStackResponse> { (complete,reject) in complete(response) }
         }
         
-        var request = GetTechnologyStack()
+        let request = GetTechnologyStack()
         request.slug = slug
         return client.getAsync(request)
-            .then(body:{ (r:GetTechnologyStackResponse) -> GetTechnologyStackResponse in
+            .then({ (r:GetTechnologyStackResponse) -> GetTechnologyStackResponse in
                 self.technologyStackCache[r.result!.slug!] = r
                 return r
             })
     }
     
-    func searchTechStacks(query:String) -> Promise<QueryResponse<TechnologyStack>> {
+    func searchTechStacks(query:String) -> Promise<FindTechStacksResponse> {
         self.search = query
         
-        let request = FindTechStacks<TechnologyStack>()
-        return client.getAsync(request, query:["NameContains":query, "DescriptionContains":query])
-            .then(body:{(r:QueryResponse<TechnologyStack>) -> QueryResponse<TechnologyStack> in
+        return client.getAsync(FindTechStacks(), query: ["NameContains":query, "DescriptionContains":query])
+            .then({(r:FindTechStacksResponse) -> FindTechStacksResponse in
                 self.filteredTechStacks = r.results
                 return r
             })
@@ -97,21 +96,20 @@ public class AppData : NSObject
             return Promise<GetTechnologyResponse> { (complete,reject) in complete(response) }
         }
         
-        var request = GetTechnology()
+        let request = GetTechnology()
         request.slug = slug
         return client.getAsync(request)
-            .then(body:{ (r:GetTechnologyResponse) -> GetTechnologyResponse in
+            .then({ (r:GetTechnologyResponse) -> GetTechnologyResponse in
                 self.technologyCache[r.technology!.slug!] = r
                 return r
             })
     }
     
-    func searchTechnologies(query:String) -> Promise<QueryResponse<Technology>> {
+    func searchTechnologies(query:String) -> Promise<FindTechnologiesResponse> {
         self.search = query
-        
-        let request = FindTechnologies<Technology>()
-        return client.getAsync(request, query:["NameContains":query, "DescriptionContains":query])
-            .then(body:{(r:QueryResponse<Technology>) -> QueryResponse<Technology> in
+
+        return client.getAsync(FindTechnologies(), query:["NameContains":query, "DescriptionContains":query])
+            .then({(r:FindTechnologiesResponse) -> FindTechnologiesResponse in
                 self.filteredTechnologies = r.results
                 return r
             })
@@ -131,7 +129,7 @@ public class AppData : NSObject
         return Promise<[String:UIImage?]> { (complete, reject) in
             for url in urls {
                 self.loadImageAsync(url)
-                    .then(body: { (img:UIImage?) -> Void in
+                    .then({ (img:UIImage?) -> Void in
                         images[url] = img
                         if images.count == urls.count {
                             return complete(images)
@@ -147,7 +145,7 @@ public class AppData : NSObject
         }
         
         return client.getDataAsync(url)
-            .then(body: { (data:NSData) -> UIImage? in
+            .then({ (data:NSData) -> UIImage? in
                 if let image = UIImage(data:data) {
                     self.imageCache[url] = image
                     return image
@@ -167,7 +165,7 @@ public class AppData : NSObject
     }
     
     public func observe(observer: NSObject, property:String) {
-        self.addObserver(observer, forKeyPath: property, options: .New | .Old, context: &ctx)
+        self.addObserver(observer, forKeyPath: property, options: [.New , .Old], context: &ctx)
         
         var properties = observedProperties[observer] ?? [String]()
         properties.append(property)

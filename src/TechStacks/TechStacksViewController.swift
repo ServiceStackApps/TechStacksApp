@@ -40,24 +40,30 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
         appData.loadAllTechStacks()
     }
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        switch keyPath {
-        case AppData.Property.AllTechnologyStacks:
-            self.tableView.reloadData()
-        default: break
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if let kp = keyPath {
+            switch kp {
+            case AppData.Property.AllTechnologyStacks:
+                self.tableView.reloadData()
+            default: break
+            }
         }
     }
+    
     deinit { self.appData.unobserve(self) }
 
     func searchText() -> String {
-        return searchController.searchBar.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if let text = searchController.searchBar.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) {
+            return text
+        }
+        return ""
     }
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         let search = searchText()
-        if search.count > 0 {
+        if search.length > 0 {
             appData.searchTechStacks(search)
-                .then(body:{(r:QueryResponse<TechnologyStack>) -> Void in
+                .then({(r:FindTechStacksResponse) -> Void in
                     if search != self.searchText() {
                         return //stale results
                     }
@@ -77,12 +83,12 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var selected = tableView == self.tableView
+        let selected = tableView == self.tableView
             ? appData.allTechnologyStacks[indexPath.row]
             : resultsController.filteredResults[indexPath.row]
         
         // Note: Should not be necessary but current iOS 8.0 bug requires it.
-        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow()!, animated: false)
+        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: false)
 
         self.storyboard?.openTechnologyStack(selected.slug!)
     }
@@ -111,8 +117,13 @@ class TechnologyStackSearchResultsController : UITableViewController {
 extension UITableView
 {
     func createTechnologyStackTableCell(result:TechnologyStack) -> UITableViewCell {
-        let cell = self.dequeueReusableCellWithIdentifier("cellTechnologyStack") as? UITableViewCell
-            ?? UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cellTechnologyStack")
+        
+        let cell: UITableViewCell
+        if let viewCell = self.dequeueReusableCellWithIdentifier("cellTechnologyStack") as UITableViewCell? {
+            cell = viewCell
+        } else {
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cellTechnologyStack")
+        }
         
         cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         cell.textLabel?.text = result.name

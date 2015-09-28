@@ -41,24 +41,29 @@ UITableViewDelegate, UITableViewDataSource {
         appData.loadAllTechnologies()
     }
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        switch keyPath {
-        case AppData.Property.AllTechnologies:
-            self.tableView.reloadData()
-        default: break
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if let kp = keyPath {
+            switch kp {
+            case AppData.Property.AllTechnologies:
+                self.tableView.reloadData()
+            default: break
+            }
         }
     }
     deinit { self.appData.unobserve(self) }
     
     func searchText() -> String {
-        return searchController.searchBar.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if let text = searchController.searchBar.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) {
+            return text
+        }
+        return ""
     }
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         let search = searchText()
-        if search.count > 0 {
+        if search.length > 0 {
             appData.searchTechnologies(search)
-                .then(body:{(r:QueryResponse<Technology>) -> Void in
+                .then({(r:FindTechnologiesResponse) -> Void in
                     if search != self.searchText() {
                         return //stale results
                     }
@@ -78,12 +83,12 @@ UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var selected = tableView == self.tableView
+        let selected = tableView == self.tableView
             ? appData.allTechnologies[indexPath.row]
             : resultsController.filteredResults[indexPath.row]
 
         // Note: Should not be necessary but current iOS 8.0 bug requires it.
-        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow()!, animated: false)
+        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: false)
 
         self.storyboard?.openTechnology(selected.slug!)
     }
@@ -108,8 +113,13 @@ class TechnologySearchResultsController : UITableViewController {
 extension UITableView
 {
     func createTechnologyTableCell(result:Technology) -> UITableViewCell {
-        let cell = self.dequeueReusableCellWithIdentifier("cellTechnology") as? UITableViewCell
-            ?? UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cellTechnology")
+        
+        var cell: UITableViewCell
+        if let viewCell = self.dequeueReusableCellWithIdentifier("cellTechnology") as UITableViewCell? {
+            cell = viewCell
+        } else {
+            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cellTechnology")
+        }
         
         cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         cell.textLabel?.text = result.name

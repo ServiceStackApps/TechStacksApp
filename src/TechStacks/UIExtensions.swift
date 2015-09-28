@@ -78,7 +78,7 @@ func deviceSizes(iphone:CGFloat, ipad:CGFloat) -> CGFloat {
 extension UIStoryboard
 {    
     func headerViewController() -> UIViewController {
-        let headerController = self.instantiateViewControllerWithIdentifier("HeaderViewController") as HeaderViewController
+        let headerController = self.instantiateViewControllerWithIdentifier("HeaderViewController") as! HeaderViewController
         let view:UIView = headerController.view!
         var frame = view.frame
         frame.size.height = 60
@@ -89,11 +89,11 @@ extension UIStoryboard
     
     var tabControler:UITabBarController {
         let window = UIApplication.sharedApplication().keyWindow!
-        return window.rootViewController as UITabBarController
+        return window.rootViewController as! UITabBarController
     }
     
     func openTechnologyStack(slug:String, goBackToTab:MainTab? = nil) {
-        let detail = self.instantiateViewControllerWithIdentifier("TechnologyStackDetailViewController") as TechnologyStackDetailViewController
+        let detail = self.instantiateViewControllerWithIdentifier("TechnologyStackDetailViewController") as! TechnologyStackDetailViewController
         detail.slug = slug
         if goBackToTab != nil {
             detail.goBackToTab = goBackToTab
@@ -106,7 +106,7 @@ extension UIStoryboard
     }
     
     func openTechnology(slug:String, goBackToTab:MainTab? = nil) {
-        let detail = self.instantiateViewControllerWithIdentifier("TechnologyDetailViewController") as TechnologyDetailViewController
+        let detail = self.instantiateViewControllerWithIdentifier("TechnologyDetailViewController") as! TechnologyDetailViewController
         detail.slug = slug
         if goBackToTab != nil {
             detail.goBackToTab = goBackToTab
@@ -129,14 +129,14 @@ extension UIStoryboard
 extension UIView
 {
     var appData:AppData {
-        return (UIApplication.sharedApplication().delegate as AppDelegate).appData
+        return (UIApplication.sharedApplication().delegate as! AppDelegate).appData
     }
 }
 
 extension UIViewController
 {
     var appData:AppData {
-        return (UIApplication.sharedApplication().delegate as AppDelegate).appData
+        return (UIApplication.sharedApplication().delegate as! AppDelegate).appData
     }
     
     func openServiceStack() {
@@ -152,14 +152,14 @@ extension UIViewController
 extension UINavigationController
 {
     func openTechnologyStack(slug:String) {
-        let detail = self.storyboard!.instantiateViewControllerWithIdentifier("TechnologyStackDetailViewController") as TechnologyStackDetailViewController
+        let detail = self.storyboard!.instantiateViewControllerWithIdentifier("TechnologyStackDetailViewController") as! TechnologyStackDetailViewController
         detail.slug = slug
         detail.navigationController?.navigationBar.backItem?.title = "Back"
         self.pushViewController(detail, animated: true)
     }
     
     func openTechnology(slug:String) {
-        let detail = self.storyboard!.instantiateViewControllerWithIdentifier("TechnologyDetailViewController") as TechnologyDetailViewController
+        let detail = self.storyboard!.instantiateViewControllerWithIdentifier("TechnologyDetailViewController") as! TechnologyDetailViewController
         detail.slug = slug
         detail.navigationController?.navigationBar.backItem?.title = "Back"
         self.pushViewController(detail, animated: true)
@@ -198,7 +198,7 @@ extension UIImageView {
         }
         
         return self.appData.loadImageAsync(url!)
-            .then(body: {(img:UIImage?) -> UIImage? in
+            .then({(img:UIImage?) -> UIImage? in
                 if img != nil {
                     
                     if withSize != nil {
@@ -237,9 +237,9 @@ extension UIImage
         scaledSize.height = self.size.height * useRatio
         
         UIGraphicsBeginImageContextWithOptions(scaledSize, false, 0.0)
-        var scaledImageRect = CGRectMake(0.0, 0.0, scaledSize.width, scaledSize.height)
+        let scaledImageRect = CGRectMake(0.0, 0.0, scaledSize.width, scaledSize.height)
         self.drawInRect(scaledImageRect)
-        var scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         return scaledImage
@@ -255,10 +255,10 @@ extension UILabel
 
 extension String {
     func toHumanFriendlyUrl() -> String {
-        if self.count == 0 {
+        if self.length == 0 {
             return ""
         }
-        var url = splitOnFirst("://").last!
+        let url = splitOnFirst("://").last!
         return url.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "/"))
     }
 }

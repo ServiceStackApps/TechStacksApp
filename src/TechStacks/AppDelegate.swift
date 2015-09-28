@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         //https://coderwall.com/p/dyqrfa/customize-navigation-bar-appearance-with-swift
-        var navigationBarAppearace = UINavigationBar.appearance()
+        let navigationBarAppearace = UINavigationBar.appearance()
         navigationBarAppearace.translucent = false
         navigationBarAppearace.tintColor = UIColor.whiteColor()
         navigationBarAppearace.barTintColor = UIColor(red: 0.0, green: 0.58431372550000005, blue: 0.96078431369999995, alpha: 1.0)
