@@ -40,7 +40,7 @@ class TechnologyStackDetailViewController : UIViewController {
         lblName.text = "loading \(name)..."
 
         appData.loadTechnologyStack(slug)
-            .then({ (r:GetTechnologyStackResponse) -> Void in
+            .then { r in
                 if let result = r.result {
                     self.result = result
                     self.title = "TechStack"
@@ -54,7 +54,7 @@ class TechnologyStackDetailViewController : UIViewController {
                     
                     self.loadTechnologies(r.result!.technologyChoices)
                 }
-            })
+            }
     }
     
     func calculateLayout() {

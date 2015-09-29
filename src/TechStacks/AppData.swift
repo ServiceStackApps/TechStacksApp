@@ -43,28 +43,28 @@ public class AppData : NSObject
     
     func loadOverview() -> Promise<AppOverviewResponse> {
         return client.getAsync(AppOverview())
-            .then({(r:AppOverviewResponse) -> AppOverviewResponse in
+            .then { r -> AppOverviewResponse in
                 self.overview = r
                 self.allTiers = r.allTiers
                 self.topTechnologies = r.topTechnologies
                 return r
-            })
+            }
     }
     
     func loadAllTechnologies() -> Promise<GetAllTechnologiesResponse> {
         return client.getAsync(GetAllTechnologies())
-            .then({(r:GetAllTechnologiesResponse) -> GetAllTechnologiesResponse in
+            .then { r -> GetAllTechnologiesResponse in
                 self.allTechnologies = r.results
                 return r
-            })
+            }
     }
     
     func loadAllTechStacks() -> Promise<GetAllTechnologyStacksResponse> {
         return client.getAsync(GetAllTechnologyStacks())
-            .then({(r:GetAllTechnologyStacksResponse) -> GetAllTechnologyStacksResponse in
+            .then { r -> GetAllTechnologyStacksResponse in
                 self.allTechnologyStacks = r.results
                 return r
-            })
+            }
     }
     
     func loadTechnologyStack(slug:String) -> Promise<GetTechnologyStackResponse> {
@@ -75,20 +75,20 @@ public class AppData : NSObject
         let request = GetTechnologyStack()
         request.slug = slug
         return client.getAsync(request)
-            .then({ (r:GetTechnologyStackResponse) -> GetTechnologyStackResponse in
+            .then { r -> GetTechnologyStackResponse in
                 self.technologyStackCache[r.result!.slug!] = r
                 return r
-            })
+            }
     }
     
     func searchTechStacks(query:String) -> Promise<FindTechStacksResponse> {
         self.search = query
         
         return client.getAsync(FindTechStacks(), query: ["NameContains":query, "DescriptionContains":query])
-            .then({(r:FindTechStacksResponse) -> FindTechStacksResponse in
+            .then { r -> FindTechStacksResponse in
                 self.filteredTechStacks = r.results
                 return r
-            })
+            }
     }
     
     func loadTechnology(slug:String) -> Promise<GetTechnologyResponse> {
@@ -99,20 +99,20 @@ public class AppData : NSObject
         let request = GetTechnology()
         request.slug = slug
         return client.getAsync(request)
-            .then({ (r:GetTechnologyResponse) -> GetTechnologyResponse in
+            .then { r -> GetTechnologyResponse in
                 self.technologyCache[r.technology!.slug!] = r
                 return r
-            })
+            }
     }
     
     func searchTechnologies(query:String) -> Promise<FindTechnologiesResponse> {
         self.search = query
 
         return client.getAsync(FindTechnologies(), query:["NameContains":query, "DescriptionContains":query])
-            .then({(r:FindTechnologiesResponse) -> FindTechnologiesResponse in
+            .then { r -> FindTechnologiesResponse in
                 self.filteredTechnologies = r.results
                 return r
-            })
+            }
     }
 
     var imageCache:[String:UIImage] = [:]
@@ -129,12 +129,12 @@ public class AppData : NSObject
         return Promise<[String:UIImage?]> { (complete, reject) in
             for url in urls {
                 self.loadImageAsync(url)
-                    .then({ (img:UIImage?) -> Void in
+                    .then { (img:UIImage?) -> Void in
                         images[url] = img
                         if images.count == urls.count {
                             return complete(images)
                         }
-                    })
+                    }
             }
         }
     }
@@ -145,13 +145,13 @@ public class AppData : NSObject
         }
         
         return client.getDataAsync(url)
-            .then({ (data:NSData) -> UIImage? in
+            .then { (data:NSData) -> UIImage? in
                 if let image = UIImage(data:data) {
                     self.imageCache[url] = image
                     return image
                 }
                 return nil
-            })
+            }
     }
     
     /* KVO Observable helpers */

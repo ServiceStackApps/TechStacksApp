@@ -63,14 +63,14 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
         let search = searchText()
         if search.length > 0 {
             appData.searchTechStacks(search)
-                .then({(r:FindTechStacksResponse) -> Void in
+                .then { r -> Void in
                     if search != self.searchText() {
                         return //stale results
                     }
                     
                     self.resultsController.filteredResults = r.results
                     self.resultsController.tableView.reloadData()
-                })
+                }
         }
     }
     

@@ -47,7 +47,7 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
         self.title = "loading \(name)..."
 
         appData.loadTechnology(slug)
-            .then({ (r:GetTechnologyResponse) -> Void in
+            .then { r in
                 if let technology = r.technology {
                     self.technology = r.technology
                     self.title = "Technology"
@@ -96,7 +96,7 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
                 }
                 self.technologyStacks = r.technologyStacks
                 self.tblTechnologyStacks.reloadData()
-            })
+            }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

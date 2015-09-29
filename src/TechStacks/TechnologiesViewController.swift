@@ -63,14 +63,14 @@ UITableViewDelegate, UITableViewDataSource {
         let search = searchText()
         if search.length > 0 {
             appData.searchTechnologies(search)
-                .then({(r:FindTechnologiesResponse) -> Void in
+                .then { r in
                     if search != self.searchText() {
                         return //stale results
                     }
                     
                     self.resultsController.filteredResults = r.results
                     self.resultsController.tableView.reloadData()
-                })
+                }
         }
     }
     
