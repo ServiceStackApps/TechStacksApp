@@ -318,7 +318,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.servicestack.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "10d93fff-f3de-4ba2-949d-991ad38ab468";
+				PROVISIONING_PROFILE = "c4b6145b-435c-41db-9a98-708a6d46f25d";
 			};
 			name = Debug;
 		};
@@ -330,7 +330,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.servicestack.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8f230894-4da2-4acc-8942-c3eda71fa60a";
+				PROVISIONING_PROFILE = "c4b6145b-435c-41db-9a98-708a6d46f25d";
 			};
 			name = Release;
 		};
