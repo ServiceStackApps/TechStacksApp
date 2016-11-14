@@ -16,7 +16,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var technologyPicker: UIPickerView!
     var selectedTechnology:TechnologyTier?
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
     }
     
     override func viewDidLoad() {
@@ -32,7 +32,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.appData.loadOverview()
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let kp = keyPath {
             switch kp {
             case AppData.Property.AllTiers:
@@ -52,50 +52,50 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     /* PickerView */
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return appData.allTiers.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return appData.allTiers[row].title
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.selectedTechnology = appData.allTiers[row].value
         tblView.reloadData()
     }
     
     /* TableView */
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return selectedTechnologies.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         var cell: UITableViewCell
-        if let viewCell = self.tblView.dequeueReusableCellWithIdentifier("cellHome") as UITableViewCell? {
+        if let viewCell = self.tblView.dequeueReusableCell(withIdentifier: "cellHome") as UITableViewCell? {
             cell = viewCell
         } else {
             cell = UITableViewCell()
         }
 
-        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        cell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         let tech = selectedTechnologies[indexPath.row]
         cell.textLabel?.text = "\(tech.name!) (\(tech.stacksCount!))"
-        cell.textLabel!.font = cell.textLabel!.font.fontWithSize(Style.tableCellTitleSize)
+        cell.textLabel!.font = cell.textLabel!.font.withSize(Style.tableCellTitleSize)
         
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Style.tableCellHeight
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = selectedTechnologies[indexPath.row]
         self.navigationController?.openTechnology(selected.slug!)
     }

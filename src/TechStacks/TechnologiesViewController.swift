@@ -41,7 +41,7 @@ UITableViewDelegate, UITableViewDataSource {
         appData.loadAllTechnologies()
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let kp = keyPath {
             switch kp {
             case AppData.Property.AllTechnologies:
@@ -53,13 +53,13 @@ UITableViewDelegate, UITableViewDataSource {
     deinit { self.appData.unobserve(self) }
     
     func searchText() -> String {
-        if let text = searchController.searchBar.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) {
+        if let text = searchController.searchBar.text?.trimmingCharacters(in: CharacterSet.whitespaces) {
             return text
         }
         return ""
     }
     
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
+    func updateSearchResults(for searchController: UISearchController) {
         let search = searchText()
         if search.length > 0 {
             appData.searchTechnologies(search)
@@ -74,26 +74,26 @@ UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return appData.allTechnologies.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.createTechnologyTableCell(appData.allTechnologies[indexPath.row])
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = tableView == self.tableView
             ? appData.allTechnologies[indexPath.row]
             : resultsController.filteredResults[indexPath.row]
 
         // Note: Should not be necessary but current iOS 8.0 bug requires it.
-        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: false)
+        tableView.deselectRow(at: tableView.indexPathForSelectedRow!, animated: false)
 
         self.storyboard?.openTechnology(selected.slug!)
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Style.tableCellHeight
     }
 }
@@ -101,33 +101,33 @@ UITableViewDelegate, UITableViewDataSource {
 class TechnologySearchResultsController : UITableViewController {
     var filteredResults = [Technology]()
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredResults.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.createTechnologyTableCell(filteredResults[indexPath.row])
     }
 }
 
 extension UITableView
 {
-    func createTechnologyTableCell(result:Technology) -> UITableViewCell {
+    func createTechnologyTableCell(_ result:Technology) -> UITableViewCell {
         
         var cell: UITableViewCell
-        if let viewCell = self.dequeueReusableCellWithIdentifier("cellTechnology") as UITableViewCell? {
+        if let viewCell = self.dequeueReusableCell(withIdentifier: "cellTechnology") as UITableViewCell? {
             cell = viewCell
         } else {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cellTechnology")
+            cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "cellTechnology")
         }
         
-        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        cell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         cell.textLabel?.text = result.name
-        cell.textLabel!.font = cell.textLabel!.font.fontWithSize(Style.tableCellTitleSize)
+        cell.textLabel!.font = cell.textLabel!.font.withSize(Style.tableCellTitleSize)
         
         cell.detailTextLabel?.text = result.Description
-        cell.detailTextLabel?.textColor = UIColor.grayColor()
-        cell.detailTextLabel!.font = cell.detailTextLabel!.font.fontWithSize(Style.tableCellDetailSize)
+        cell.detailTextLabel?.textColor = UIColor.gray
+        cell.detailTextLabel!.font = cell.detailTextLabel!.font.withSize(Style.tableCellDetailSize)
 
         return cell
     }

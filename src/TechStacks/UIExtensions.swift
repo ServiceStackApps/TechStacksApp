@@ -12,9 +12,9 @@ import UIKit
 // Reusable code shared by different views
 public enum MainTab : Int
 {
-    case Home = 0
-    case TechStacks = 1
-    case Technologies = 2
+    case home = 0
+    case techStacks = 1
+    case technologies = 2
 }
 
 public struct Style
@@ -68,17 +68,17 @@ extension CGFloat
 }
 
 func iPad() -> Bool {
-    return UIDevice.currentDevice().userInterfaceIdiom == .Pad
+    return UIDevice.current.userInterfaceIdiom == .pad
 }
 
-func deviceSizes(iphone:CGFloat, ipad:CGFloat) -> CGFloat {
-    return UIDevice.currentDevice().userInterfaceIdiom == .Pad ? ipad : iphone
+func deviceSizes(_ iphone:CGFloat, ipad:CGFloat) -> CGFloat {
+    return UIDevice.current.userInterfaceIdiom == .pad ? ipad : iphone
 }
 
 extension UIStoryboard
 {    
     func headerViewController() -> UIViewController {
-        let headerController = self.instantiateViewControllerWithIdentifier("HeaderViewController") as! HeaderViewController
+        let headerController = self.instantiateViewController(withIdentifier: "HeaderViewController") as! HeaderViewController
         let view:UIView = headerController.view!
         var frame = view.frame
         frame.size.height = 60
@@ -88,38 +88,38 @@ extension UIStoryboard
     }
     
     var tabControler:UITabBarController {
-        let window = UIApplication.sharedApplication().keyWindow!
+        let window = UIApplication.shared.keyWindow!
         return window.rootViewController as! UITabBarController
     }
     
-    func openTechnologyStack(slug:String, goBackToTab:MainTab? = nil) {
-        let detail = self.instantiateViewControllerWithIdentifier("TechnologyStackDetailViewController") as! TechnologyStackDetailViewController
+    func openTechnologyStack(_ slug:String, goBackToTab:MainTab? = nil) {
+        let detail = self.instantiateViewController(withIdentifier: "TechnologyStackDetailViewController") as! TechnologyStackDetailViewController
         detail.slug = slug
         if goBackToTab != nil {
             detail.goBackToTab = goBackToTab
         }
         
-        let navController = tabControler.navigationControllerFor(MainTab.TechStacks)!
-        navController.popToRootViewControllerAnimated(true)
+        let navController = tabControler.navigationControllerFor(MainTab.techStacks)!
+        navController.popToRootViewController(animated: true)
         navController.pushViewController(detail, animated: true)
-        tabControler.switchTab(MainTab.TechStacks)
+        tabControler.switchTab(MainTab.techStacks)
     }
     
-    func openTechnology(slug:String, goBackToTab:MainTab? = nil) {
-        let detail = self.instantiateViewControllerWithIdentifier("TechnologyDetailViewController") as! TechnologyDetailViewController
+    func openTechnology(_ slug:String, goBackToTab:MainTab? = nil) {
+        let detail = self.instantiateViewController(withIdentifier: "TechnologyDetailViewController") as! TechnologyDetailViewController
         detail.slug = slug
         if goBackToTab != nil {
             detail.goBackToTab = goBackToTab
         }
 
-        let navController = tabControler.navigationControllerFor(MainTab.Technologies)!
-        navController.popToRootViewControllerAnimated(true)
+        let navController = tabControler.navigationControllerFor(MainTab.technologies)!
+        navController.popToRootViewController(animated: true)
         navController.pushViewController(detail, animated: true)
-        tabControler.switchTab(MainTab.Technologies)
+        tabControler.switchTab(MainTab.technologies)
     }
     
-    func switchTab(tab:MainTab) {
-        if let window = UIApplication.sharedApplication().keyWindow {
+    func switchTab(_ tab:MainTab) {
+        if let window = UIApplication.shared.keyWindow {
             let tabController = window.rootViewController as? UITabBarController
             tabController?.switchTab(tab)
         }
@@ -129,14 +129,14 @@ extension UIStoryboard
 extension UIView
 {
     var appData:AppData {
-        return (UIApplication.sharedApplication().delegate as! AppDelegate).appData
+        return (UIApplication.shared.delegate as! AppDelegate).appData
     }
 }
 
 extension UIViewController
 {
     var appData:AppData {
-        return (UIApplication.sharedApplication().delegate as! AppDelegate).appData
+        return (UIApplication.shared.delegate as! AppDelegate).appData
     }
     
     func openServiceStack() {
@@ -145,21 +145,21 @@ extension UIViewController
     
     func addLogo() {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "logo"), landscapeImagePhone: nil, style: UIBarButtonItemStyle.Done, target: self, action: "openServiceStack")
+            image: UIImage(named: "logo"), landscapeImagePhone: nil, style: UIBarButtonItemStyle.done, target: self, action: #selector(UIViewController.openServiceStack))
     }
 }
 
 extension UINavigationController
 {
-    func openTechnologyStack(slug:String) {
-        let detail = self.storyboard!.instantiateViewControllerWithIdentifier("TechnologyStackDetailViewController") as! TechnologyStackDetailViewController
+    func openTechnologyStack(_ slug:String) {
+        let detail = self.storyboard!.instantiateViewController(withIdentifier: "TechnologyStackDetailViewController") as! TechnologyStackDetailViewController
         detail.slug = slug
         detail.navigationController?.navigationBar.backItem?.title = "Back"
         self.pushViewController(detail, animated: true)
     }
     
-    func openTechnology(slug:String) {
-        let detail = self.storyboard!.instantiateViewControllerWithIdentifier("TechnologyDetailViewController") as! TechnologyDetailViewController
+    func openTechnology(_ slug:String) {
+        let detail = self.storyboard!.instantiateViewController(withIdentifier: "TechnologyDetailViewController") as! TechnologyDetailViewController
         detail.slug = slug
         detail.navigationController?.navigationBar.backItem?.title = "Back"
         self.pushViewController(detail, animated: true)
@@ -168,7 +168,7 @@ extension UINavigationController
 
 extension UITabBarController
 {
-    func switchTab(tab:MainTab) {
+    func switchTab(_ tab:MainTab) {
         self.selectedIndex = tab.rawValue
     }
     
@@ -176,7 +176,7 @@ extension UITabBarController
         return self.viewControllers![self.selectedIndex] as? UINavigationController
     }
     
-    func navigationControllerFor(tab:MainTab) -> UINavigationController? {
+    func navigationControllerFor(_ tab:MainTab) -> UINavigationController? {
         return self.viewControllers![tab.rawValue] as? UINavigationController
     }
     
@@ -186,7 +186,7 @@ extension UITabBarController
 }
 
 extension UIImageView {
-    func loadAsync(url:String?, defaultImage:String? = nil, withSize:CGSize? = nil) -> Promise<UIImage?> {
+    func loadAsync(_ url:String?, defaultImage:String? = nil, withSize:CGSize? = nil) -> Promise<UIImage?> {
         if defaultImage != nil {
             self.image = self.appData.imageCache[defaultImage!]
         } else {
@@ -198,7 +198,7 @@ extension UIImageView {
         }
         
         return self.appData.loadImageAsync(url!)
-            .then({(img:UIImage?) -> UIImage? in
+            .then {(img:UIImage?) -> UIImage? in
                 if img != nil {
                     
                     if withSize != nil {
@@ -208,13 +208,13 @@ extension UIImageView {
                     }
                 }
                 return self.image
-            })
+            }
     }
 }
 
 extension CGFloat
 {
-    public func toHexColor(rgbValue:UInt32) -> UIColor {
+    public func toHexColor(_ rgbValue:UInt32) -> UIColor {
         let red = CGFloat((rgbValue & 0xFF0000) >> 16)/256.0
         let green = CGFloat((rgbValue & 0xFF00) >> 8)/256.0
         let blue = CGFloat(rgbValue & 0xFF)/256.0
@@ -225,7 +225,7 @@ extension CGFloat
 
 extension UIImage
 {
-    func scaledInto(bounds:CGSize) -> UIImage
+    func scaledInto(_ bounds:CGSize) -> UIImage
     {
         var scaledSize:CGSize = bounds
         
@@ -237,18 +237,18 @@ extension UIImage
         scaledSize.height = self.size.height * useRatio
         
         UIGraphicsBeginImageContextWithOptions(scaledSize, false, 0.0)
-        let scaledImageRect = CGRectMake(0.0, 0.0, scaledSize.width, scaledSize.height)
-        self.drawInRect(scaledImageRect)
+        let scaledImageRect = CGRect(x: 0.0, y: 0.0, width: scaledSize.width, height: scaledSize.height)
+        self.draw(in: scaledImageRect)
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return scaledImage
+        return scaledImage!
     }
 }
 
 extension UILabel
 {
-    func setFrame(x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat) {
+    func setFrame(_ x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat) {
         self.frame = self.frame
     }
 }
@@ -258,8 +258,8 @@ extension String {
         if self.length == 0 {
             return ""
         }
-        let url = splitOnFirst("://").last!
-        return url.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "/"))
+        let url = splitOn(first:"://").last!
+        return url.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
     }
 }
 

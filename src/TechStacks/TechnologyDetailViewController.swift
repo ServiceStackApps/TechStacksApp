@@ -27,13 +27,13 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
 
     @IBAction func btnProductGo() {
         if technology?.productUrl != nil {
-            if let url = NSURL(string: technology!.productUrl!) {
-                UIApplication.sharedApplication().openURL(url)
+            if let url = URL(string: technology!.productUrl!) {
+                UIApplication.shared.openURL(url)
             }
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         if goBackToTab != nil {
             self.storyboard?.switchTab(goBackToTab!)
         }
@@ -60,23 +60,23 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
                     let logoBounds = CGSize(width: self.view.frame.size.width / 2 - (pad * 2), height: self.imgLogo.frame.size.height)
 
                     self.lblName.text = technology.name
-                    self.lblName.font = self.lblName.font.fontWithSize(Style.titleSize)
+                    self.lblName.font = self.lblName.font.withSize(Style.titleSize)
                     
                     if technology.vendorName != nil && technology.vendorName != technology.name {
                         self.lblVendor.text = "by \(technology.vendorName!)"
-                        self.lblVendor.font = self.lblVendor.font.fontWithSize(Style.detailSize)
+                        self.lblVendor.font = self.lblVendor.font.withSize(Style.detailSize)
                         self.lblVendor.frame = CGRect(x: pad, y: self.lblName.frame.size.height + pad, width: halfWidth, height: Style.detailSize.lineHeight)
                     }
 
                     if let friendlyUrl = technology.productUrl?.toHumanFriendlyUrl() {
-                        self.btnUrl.setTitle(friendlyUrl, forState: .Normal)
+                        self.btnUrl.setTitle(friendlyUrl, for: UIControlState())
                     }
                     
                     self.lblDescription.text = technology.Description
                     self.lblDescription.frame = CGRect(
                         x: pad, y: logoBounds.height,
                         width: innerWidth, height: Style.detailSize.lineHeight)
-                    if let f = self.lblDescription.font?.fontWithSize(Style.detailSize) {
+                    if let f = self.lblDescription.font?.withSize(Style.detailSize) {
                         self.lblDescription.font = f
                     }
                     self.lblDescription.sizeToFit()
@@ -88,36 +88,36 @@ class TechnologyDetailViewController : UIViewController, UITableViewDelegate, UI
                         width: fullWidth, height: self.view.frame.height - tblOffset - 54 /* bottom bar */)
 
                     self.imgLogo.loadAsync(technology.logoUrl, withSize:logoBounds)
-                        .then({ (img:UIImage?) -> Void in
+                        .then { (img:UIImage?) -> Void in
                             if img != nil {
                                 self.imgLogo.frame.origin = CGPoint(x: fullWidth - img!.size.width - pad, y: 0)
                             }
-                        })
+                        }
                 }
                 self.technologyStacks = r.technologyStacks
                 self.tblTechnologyStacks.reloadData()
             }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return technologyStacks.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.createTechnologyStackTableCell(technologyStacks[indexPath.row])
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = technologyStacks[indexPath.row]
         
         // Note: Should not be necessary but current iOS 8.0 bug requires it.
-        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: false)
+        tableView.deselectRow(at: tableView.indexPathForSelectedRow!, animated: false)
         
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         self.navigationController?.openTechnologyStack(selected.slug!)
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Style.tableCellHeight
     }
 }

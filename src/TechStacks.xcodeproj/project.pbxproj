@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		25CAD1011BB8BEE5007800C2 /* TechStacks.dtos.extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CAD1001BB8BEE5007800C2 /* TechStacks.dtos.extras.swift */; settings = {ASSET_TAGS = (); }; };
 		5162D4321A8234D7005AC7E2 /* TechnologiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162D4311A8234D7005AC7E2 /* TechnologiesViewController.swift */; };
 		5162D4341A82B82D005AC7E2 /* TechnologyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162D4331A82B82D005AC7E2 /* TechnologyDetailViewController.swift */; };
 		51A0817D1A7F6DB5000590E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A0817C1A7F6DB5000590E9 /* AppDelegate.swift */; };
@@ -38,7 +37,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		25CAD1001BB8BEE5007800C2 /* TechStacks.dtos.extras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TechStacks.dtos.extras.swift; sourceTree = "<group>"; };
 		5162D4311A8234D7005AC7E2 /* TechnologiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TechnologiesViewController.swift; sourceTree = "<group>"; };
 		5162D4331A82B82D005AC7E2 /* TechnologyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TechnologyDetailViewController.swift; sourceTree = "<group>"; };
 		51A081771A7F6DB5000590E9 /* TechStacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TechStacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,7 +99,6 @@
 				51A081871A7F6DB6000590E9 /* LaunchScreen.xib */,
 				51A081FB1A80455B000590E9 /* JsonServiceClient.swift */,
 				51A081F41A7F73FC000590E9 /* TechStacks.dtos.swift */,
-				25CAD1001BB8BEE5007800C2 /* TechStacks.dtos.extras.swift */,
 				51D0210A1A87875C007D973F /* Image.xcassets */,
 			);
 			path = TechStacks;
@@ -149,6 +146,7 @@
 					51A081761A7F6DB5000590E9 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = DK4VJ3YB24;
+						LastSwiftMigration = 0810;
 					};
 				};
 			};
@@ -193,7 +191,6 @@
 				51F0B9BB1A809803003910E7 /* UIExtensions.swift in Sources */,
 				51F0B9B91A8090E8003910E7 /* HeaderViewController.swift in Sources */,
 				51F0B9BD1A80A0D1003910E7 /* AppData.swift in Sources */,
-				25CAD1011BB8BEE5007800C2 /* TechStacks.dtos.extras.swift in Sources */,
 				51A0817D1A7F6DB5000590E9 /* AppDelegate.swift in Sources */,
 				5162D4341A82B82D005AC7E2 /* TechnologyDetailViewController.swift in Sources */,
 				51A0817F1A7F6DB5000590E9 /* HomeViewController.swift in Sources */,
@@ -319,6 +316,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.servicestack.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c4b6145b-435c-41db-9a98-708a6d46f25d";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -331,6 +329,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.servicestack.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c4b6145b-435c-41db-9a98-708a6d46f25d";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

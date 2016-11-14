@@ -20,15 +20,15 @@ class TechnologyStackDetailViewController : UIViewController {
     
     var result:TechStackDetails?
     
-    @IBAction func btnAppUrlGo(sender: AnyObject) {
+    @IBAction func btnAppUrlGo(_ sender: AnyObject) {
         if result?.appUrl != nil {
-            if let url = NSURL(string: result!.appUrl!) {
-                UIApplication.sharedApplication().openURL(url)
+            if let url = URL(string: result!.appUrl!) {
+                UIApplication.shared.openURL(url)
             }
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         if goBackToTab != nil {
             self.storyboard?.switchTab(goBackToTab!)
         }
@@ -64,10 +64,10 @@ class TechnologyStackDetailViewController : UIViewController {
         let innerWidth = fullWidth - (pad * 2)
         
         lblName.frame = CGRect(x: pad, y: pad, width: innerWidth, height: Style.titleSize.lineHeight)
-        lblName.font = lblName.font.fontWithSize(Style.titleSize)
+        lblName.font = lblName.font.withSize(Style.titleSize)
 
         lblDescription.frame = CGRect(x: pad, y:pad + lblName.frame.size.height + pad, width:innerWidth, height: Style.detailSize.lineHeight)
-        if let f = lblDescription.font?.fontWithSize(Style.detailSize) {
+        if let f = lblDescription.font?.withSize(Style.detailSize) {
             lblDescription.font = f
         }
         lblDescription.sizeToFit()
@@ -78,24 +78,24 @@ class TechnologyStackDetailViewController : UIViewController {
             width: Style.screenshotWidth,
             height: Style.screenshotHeight)
         
-        let btnAppUrl = UIButton(type: UIButtonType.System)
+        let btnAppUrl = UIButton(type: UIButtonType.system)
         btnAppUrl.frame = CGRect(x: imgScreenshot.frame.origin.x,
                 y: imgScreenshot.frame.origin.y + imgScreenshot.frame.size.height,
                 width: imgScreenshot.frame.width,
                 height: Style.detailSize.lineHeight)
-        btnAppUrl.setTitle(result!.appUrl?.toHumanFriendlyUrl(), forState: .Normal)
-        btnAppUrl.addTarget(self, action: "btnAppUrlGo:", forControlEvents: .TouchUpInside)
+        btnAppUrl.setTitle(result!.appUrl?.toHumanFriendlyUrl(), for: UIControlState())
+        btnAppUrl.addTarget(self, action: #selector(TechnologyStackDetailViewController.btnAppUrlGo(_:)), for: .touchUpInside)
         scrollView.addSubview(btnAppUrl)
     }
     
     var techSlugs = [String]()
 
-    func loadTechnologies(techChoices:[TechnologyInStack]) {
+    func loadTechnologies(_ techChoices:[TechnologyInStack]) {
         let imageUrls = techChoices.filter { $0.logoUrl != nil }.map { $0.logoUrl! }
         let fullWidth = self.view.frame.width
         
         self.appData.loadAllImagesAsync(imageUrls)
-            .then({ (images:[String:UIImage?]) -> Void in
+            .then { (images:[String:UIImage?]) -> Void in
                 let pad = Style.padding
                 let btnAppUrlSize:CGFloat = 20
                 var startPos = self.imgScreenshot.frame.origin.y + self.imgScreenshot.frame.size.height + pad + btnAppUrlSize
@@ -104,12 +104,12 @@ class TechnologyStackDetailViewController : UIViewController {
                     let techologiesInTier = techChoices.filter { $0.tier == tier.value }
                     if techologiesInTier.count > 0 {
                         startPos += pad
-                        let title = UILabel(frame: CGRectMake(pad, startPos + pad, fullWidth, Style.headingSize.lineHeight))
+                        let title = UILabel(frame: CGRect(x: pad, y: startPos + pad, width: fullWidth, height: Style.headingSize.lineHeight))
                         title.font = UIFont(name: title.font.fontName, size: Style.headingSize)
                         startPos += Style.headingSize
                         
                         title.text = tier.title
-                        title.textColor = UIColor.lightGrayColor()
+                        title.textColor = UIColor.lightGray
                         self.scrollView.addSubview(title)
 
                         startPos += pad
@@ -122,7 +122,7 @@ class TechnologyStackDetailViewController : UIViewController {
                                 if img == nil {
                                     continue
                                 }
-                                i++
+                                i += 1
                                 startPos += pad
                                 let x = i % 2 == 1 ? pad : fullWidth / 2 + pad
                                 let imgBtn = UIButton(frame: CGRect(x: x, y: startPos, width: fullWidth / 2 - (2 * pad), height: Style.techLogoHeight))
@@ -130,10 +130,10 @@ class TechnologyStackDetailViewController : UIViewController {
                                     startPos += Style.techLogoHeight
                                 }
 
-                                imgBtn.setImage(img!.scaledInto(imgBtn.frame.size), forState: .Normal)
+                                imgBtn.setImage(img!.scaledInto(imgBtn.frame.size), for: UIControlState())
                                 self.techSlugs.append(tech.slug!)
                                 imgBtn.tag = self.techSlugs.count - 1
-                                imgBtn.addTarget(self, action: "onTechnologySelected:", forControlEvents: .TouchUpInside)
+                                imgBtn.addTarget(self, action: "onTechnologySelected:", for: .touchUpInside)
                                 
                                 self.scrollView.addSubview(imgBtn)
                             }
@@ -145,12 +145,12 @@ class TechnologyStackDetailViewController : UIViewController {
                 }
                 
                 self.scrollView.contentSize = CGSize(width: self.view.frame.width, height: startPos)
-            })
+            }
     }
     
-    func onTechnologySelected(sender:UIButton) {
+    func onTechnologySelected(_ sender:UIButton) {
         let slug = techSlugs[sender.tag]
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         self.navigationController?.openTechnology(slug)
     }
     

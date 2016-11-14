@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 
 
-public class AppData : NSObject
+open class AppData : NSObject
 {
     var client = JsonServiceClient(baseUrl: "http://techstacks.io")
     
@@ -21,20 +21,20 @@ public class AppData : NSObject
         static let AllTechnologyStacks = "allTechnologyStacks"
     }
     
-    public dynamic var allTiers:[Option] = []
+    open dynamic var allTiers:[Option] = []
     
-    public dynamic var overview:AppOverviewResponse = AppOverviewResponse()
-    public dynamic var topTechnologies:[TechnologyInfo] = []
+    open dynamic var overview:AppOverviewResponse = AppOverviewResponse()
+    open dynamic var topTechnologies:[TechnologyInfo] = []
     
-    public dynamic var allTechnologies:[Technology] = []
-    public dynamic var allTechnologyStacks:[TechnologyStack] = []
+    open dynamic var allTechnologies:[Technology] = []
+    open dynamic var allTechnologyStacks:[TechnologyStack] = []
     
-    public dynamic var search:String?
-    public dynamic var filteredTechStacks:[TechnologyStack] = []
-    public dynamic var filteredTechnologies:[Technology] = []
+    open dynamic var search:String?
+    open dynamic var filteredTechStacks:[TechnologyStack] = []
+    open dynamic var filteredTechnologies:[Technology] = []
     
-    public var technologyStackCache:[String:GetTechnologyStackResponse] = [:]
-    public var technologyCache:[String:GetTechnologyResponse] = [:]
+    open var technologyStackCache:[String:GetTechnologyStackResponse] = [:]
+    open var technologyCache:[String:GetTechnologyResponse] = [:]
     
     override init(){
         super.init()
@@ -67,7 +67,7 @@ public class AppData : NSObject
             }
     }
     
-    func loadTechnologyStack(slug:String) -> Promise<GetTechnologyStackResponse> {
+    func loadTechnologyStack(_ slug:String) -> Promise<GetTechnologyStackResponse> {
         if let response = technologyStackCache[slug] {
             return Promise<GetTechnologyStackResponse> { (complete,reject) in complete(response) }
         }
@@ -81,17 +81,17 @@ public class AppData : NSObject
             }
     }
     
-    func searchTechStacks(query:String) -> Promise<FindTechStacksResponse> {
+    func searchTechStacks(_ query:String) -> Promise<QueryResponse<TechnologyStack>> {
         self.search = query
         
-        return client.getAsync(FindTechStacks(), query: ["NameContains":query, "DescriptionContains":query])
-            .then { r -> FindTechStacksResponse in
+        return client.getAsync(FindTechStacks<TechnologyStack>(), query: ["NameContains":query, "DescriptionContains":query])
+            .then { r -> QueryResponse<TechnologyStack> in
                 self.filteredTechStacks = r.results
                 return r
             }
     }
     
-    func loadTechnology(slug:String) -> Promise<GetTechnologyResponse> {
+    func loadTechnology(_ slug:String) -> Promise<GetTechnologyResponse> {
         if let response = technologyCache[slug] {
             return Promise<GetTechnologyResponse> { (complete,reject) in complete(response) }
         }
@@ -105,11 +105,11 @@ public class AppData : NSObject
             }
     }
     
-    func searchTechnologies(query:String) -> Promise<FindTechnologiesResponse> {
+    func searchTechnologies(_ query:String) -> Promise<QueryResponse<Technology>> {
         self.search = query
 
-        return client.getAsync(FindTechnologies(), query:["NameContains":query, "DescriptionContains":query])
-            .then { r -> FindTechnologiesResponse in
+        return client.getAsync(FindTechnologies<Technology>(), query:["NameContains":query, "DescriptionContains":query])
+            .then { r -> QueryResponse<Technology> in
                 self.filteredTechnologies = r.results
                 return r
             }
@@ -119,12 +119,12 @@ public class AppData : NSObject
     func loadDefaultImageCaches() {
         imageCache["stacks"] = UIImage(named: "stacks")
 
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(858, 689), false, 0.0)
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 858, height: 689), false, 0.0)
         imageCache["blankScreenshot"] = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
     }
     
-    public func loadAllImagesAsync(urls:[String]) -> Promise<[String:UIImage?]> {
+    open func loadAllImagesAsync(_ urls:[String]) -> Promise<[String:UIImage?]> {
         var images = [String:UIImage?]()
         return Promise<[String:UIImage?]> { (complete, reject) in
             for url in urls {
@@ -139,13 +139,13 @@ public class AppData : NSObject
         }
     }
     
-    public func loadImageAsync(url:String) -> Promise<UIImage?> {
+    open func loadImageAsync(_ url:String) -> Promise<UIImage?> {
         if let image = imageCache[url] {
             return Promise<UIImage?> { (complete, reject) in complete(image) }
         }
         
         return client.getDataAsync(url)
-            .then { (data:NSData) -> UIImage? in
+            .then { (data:Data) -> UIImage? in
                 if let image = UIImage(data:data) {
                     self.imageCache[url] = image
                     return image
@@ -156,23 +156,23 @@ public class AppData : NSObject
     
     /* KVO Observable helpers */
     var observedProperties = [NSObject:[String]]()
-    var ctx:AnyObject = 1
+    var ctx:AnyObject = 1 as AnyObject
     
-    public func observe(observer: NSObject, properties:[String]) {
+    open func observe(_ observer: NSObject, properties:[String]) {
         for property in properties {
             self.observe(observer, property: property)
         }
     }
     
-    public func observe(observer: NSObject, property:String) {
-        self.addObserver(observer, forKeyPath: property, options: [.New , .Old], context: &ctx)
+    open func observe(_ observer: NSObject, property:String) {
+        self.addObserver(observer, forKeyPath: property, options: [.new , .old], context: &ctx)
         
         var properties = observedProperties[observer] ?? [String]()
         properties.append(property)
         observedProperties[observer] = properties
     }
     
-    public func unobserve(observer: NSObject) {
+    open func unobserve(_ observer: NSObject) {
         if let properties = observedProperties[observer] {
             for property in properties {
                 self.removeObserver(observer, forKeyPath: property, context: &ctx)

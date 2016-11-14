@@ -40,7 +40,7 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
         appData.loadAllTechStacks()
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let kp = keyPath {
             switch kp {
             case AppData.Property.AllTechnologyStacks:
@@ -53,13 +53,13 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
     deinit { self.appData.unobserve(self) }
 
     func searchText() -> String {
-        if let text = searchController.searchBar.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) {
+        if let text = searchController.searchBar.text?.trimmingCharacters(in: CharacterSet.whitespaces) {
             return text
         }
         return ""
     }
     
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
+    func updateSearchResults(for searchController: UISearchController) {
         let search = searchText()
         if search.length > 0 {
             appData.searchTechStacks(search)
@@ -74,26 +74,26 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
         }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return appData.allTechnologyStacks.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.createTechnologyStackTableCell(appData.allTechnologyStacks[indexPath.row])
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selected = tableView == self.tableView
             ? appData.allTechnologyStacks[indexPath.row]
             : resultsController.filteredResults[indexPath.row]
         
         // Note: Should not be necessary but current iOS 8.0 bug requires it.
-        tableView.deselectRowAtIndexPath(tableView.indexPathForSelectedRow!, animated: false)
+        tableView.deselectRow(at: tableView.indexPathForSelectedRow!, animated: false)
 
         self.storyboard?.openTechnologyStack(selected.slug!)
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Style.tableCellHeight
     }
 }
@@ -101,37 +101,37 @@ class TechStacksViewController: UIViewController, UISearchBarDelegate, UISearchC
 class TechnologyStackSearchResultsController : UITableViewController {
     var filteredResults = [TechnologyStack]()
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredResults.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.createTechnologyStackTableCell(filteredResults[indexPath.row])
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Style.tableCellHeight
     }
 }
 
 extension UITableView
 {
-    func createTechnologyStackTableCell(result:TechnologyStack) -> UITableViewCell {
+    func createTechnologyStackTableCell(_ result:TechnologyStack) -> UITableViewCell {
         
         let cell: UITableViewCell
-        if let viewCell = self.dequeueReusableCellWithIdentifier("cellTechnologyStack") as UITableViewCell? {
+        if let viewCell = self.dequeueReusableCell(withIdentifier: "cellTechnologyStack") as UITableViewCell? {
             cell = viewCell
         } else {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cellTechnologyStack")
+            cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "cellTechnologyStack")
         }
         
-        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        cell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         cell.textLabel?.text = result.name
-        cell.textLabel!.font = cell.textLabel!.font.fontWithSize(Style.tableCellTitleSize)
+        cell.textLabel!.font = cell.textLabel!.font.withSize(Style.tableCellTitleSize)
         
         cell.detailTextLabel?.text = result.Description
-        cell.detailTextLabel?.textColor = UIColor.grayColor()
-        cell.detailTextLabel!.font = cell.detailTextLabel!.font.fontWithSize(Style.tableCellDetailSize)
+        cell.detailTextLabel?.textColor = UIColor.gray
+        cell.detailTextLabel!.font = cell.detailTextLabel!.font.withSize(Style.tableCellDetailSize)
 
         return cell
     }
