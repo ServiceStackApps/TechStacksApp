@@ -41,7 +41,7 @@ open class AppData : NSObject
         self.loadDefaultImageCaches()
     }
     
-    func loadOverview() -> Promise<AppOverviewResponse> {
+    @discardableResult func loadOverview() -> Promise<AppOverviewResponse> {
         return client.getAsync(AppOverview())
             .then { r -> AppOverviewResponse in
                 self.overview = r
@@ -51,7 +51,7 @@ open class AppData : NSObject
             }
     }
     
-    func loadAllTechnologies() -> Promise<GetAllTechnologiesResponse> {
+    @discardableResult func loadAllTechnologies() -> Promise<GetAllTechnologiesResponse> {
         return client.getAsync(GetAllTechnologies())
             .then { r -> GetAllTechnologiesResponse in
                 self.allTechnologies = r.results
@@ -59,7 +59,7 @@ open class AppData : NSObject
             }
     }
     
-    func loadAllTechStacks() -> Promise<GetAllTechnologyStacksResponse> {
+    @discardableResult func loadAllTechStacks() -> Promise<GetAllTechnologyStacksResponse> {
         return client.getAsync(GetAllTechnologyStacks())
             .then { r -> GetAllTechnologyStacksResponse in
                 self.allTechnologyStacks = r.results

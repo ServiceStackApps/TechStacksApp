@@ -133,7 +133,9 @@ class TechnologyStackDetailViewController : UIViewController {
                                 imgBtn.setImage(img!.scaledInto(imgBtn.frame.size), for: UIControlState())
                                 self.techSlugs.append(tech.slug!)
                                 imgBtn.tag = self.techSlugs.count - 1
-                                imgBtn.addTarget(self, action: "onTechnologySelected:", for: .touchUpInside)
+                                imgBtn.addTarget(self,
+                                    action: #selector(TechnologyStackDetailViewController.onTechnologySelected(_:)),
+                                    for: .touchUpInside)
                                 
                                 self.scrollView.addSubview(imgBtn)
                             }

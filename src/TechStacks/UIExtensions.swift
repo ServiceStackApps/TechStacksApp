@@ -186,7 +186,7 @@ extension UITabBarController
 }
 
 extension UIImageView {
-    func loadAsync(_ url:String?, defaultImage:String? = nil, withSize:CGSize? = nil) -> Promise<UIImage?> {
+    @discardableResult func loadAsync(_ url:String?, defaultImage:String? = nil, withSize:CGSize? = nil) -> Promise<UIImage?> {
         if defaultImage != nil {
             self.image = self.appData.imageCache[defaultImage!]
         } else {
