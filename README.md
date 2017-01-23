@@ -2,7 +2,7 @@
 
 The TechStacks Native iOS App provides a fluid and responsive experience for browsing content on http://techstacks.io on iPhones and iPad devices. Get it now free on the AppStore!
 
-[![TechStacks on AppStore](https://raw.githubusercontent.com/ServiceStack/Assets/master/img/release-notes/techstacks-appstore.png)](https://itunes.apple.com/us/app/techstacks/id965680615?ls=1&mt=8)
+[![TechStacks on AppStore](https://raw.githubusercontent.com/ServiceStack/Assets/master/img/release-notes/techstacks-appstore.png)](https://itunes.apple.com/us/app/webstacks/id1176797617?ls=1&mt=8)
 
 This repository contains the complete source code for the TechStacks App which provides a good example to illustrate the ease-of-use and utility of [ServiceStack's new support for Swift and XCode](https://github.com/ServiceStack/ServiceStack/wiki/Swift-Add-ServiceStack-Reference) for quickly building services-rich iOS Apps.
 
